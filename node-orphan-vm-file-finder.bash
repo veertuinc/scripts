@@ -9,14 +9,15 @@ ANKA_IMAGE="/Library/Application Support/Veertu/Anka/bin/anka_image"
 function recurse_ank_layers() {
 	local ANK_DIR=$1
 	local ANK_FILE=$2
-	# echo "Adding $ANK_FILE"
+	echo "Adding: $ANK_FILE"
 	ANK_IN_USE+=( "$ANK_FILE" )
-	while ANK_FILE=$("$ANKA_IMAGE" info "$ANK_DIR/$ANK_FILE" | grep 'Base Image:' | awk -F: '{ print $NF }' | xargs); do
-		if [ "$ANK_FILE" == "" ]; then
+	while true; do
+    FOUNDATION_ANK_FILE=$("$ANKA_IMAGE_BINARY" info "${ANK_DIR}$ANK_FILE" | grep 'Base Image:' | awk -F: '{ print $NF }' | xargs)
+		if [ "$FOUNDATION_ANK_FILE" == "" ]; then
 			break
 		fi
-		# echo "Adding $ANK_FILE"
-		ANK_IN_USE+=( "$ANK_FILE" )
+    recurse_ank_layers "$ANK_DIR" "$FOUNDATION_ANK_FILE"
+    break
 	done
 }
 IFS=$'\n'
