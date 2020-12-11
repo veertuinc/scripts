@@ -5,7 +5,7 @@ ORPHANED_FILES=()
 VM_LIB=$(anka config vm_lib_dir)
 IMG_LIB=$(anka config img_lib_dir)
 STATE_LIB=$(anka config state_lib_dir)
-ANKA_IMAGE="/Library/Application Support/Veertu/Anka/bin/anka_image"
+ANKA_IMAGE_BINARY="/Library/Application Support/Veertu/Anka/bin/anka_image"
 function recurse_ank_layers() {
 	local ANK_DIR=$1
 	local ANK_FILE=$2
@@ -34,8 +34,8 @@ for YAML_FILE in $(find "$VM_LIB" -name '*.yaml'); do
 	fi
 done
 echo "=========================================="
-FILE_ARRAY=($(find "$IMG_LIB" -name '*.ank' -type f))
-FILE_ARRAY+=($(find "$STATE_LIB" -name '*.ank' -type f))
+FILE_ARRAY=($(find "$IMG_LIB" \( -name '*.ank' -o -name '*.ank.*' \) -type f))
+FILE_ARRAY+=($(find "$STATE_LIB" \( -name '*.ank' -o -name '*.ank.*' \) -type f))
 for ANK_FILE in "${FILE_ARRAY[@]}"; do
 	if [[ ! "${ANK_IN_USE[@]}" =~ $(basename "$ANK_FILE") ]]; then
 		echo "$ANK_FILE - ORPHANED"
