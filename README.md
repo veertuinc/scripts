@@ -1,1 +1,1 @@
-# scripts
+# Various scripts for supporting customers

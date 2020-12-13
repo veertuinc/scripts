@@ -1,7 +1,6 @@
 #!/bin/bash
 set -e
 ANK_IN_USE=()
-ORPHANED_FILES=()
 VM_LIB=$(anka config vm_lib_dir)
 IMG_LIB=$(anka config img_lib_dir)
 STATE_LIB=$(anka config state_lib_dir)
@@ -13,7 +12,7 @@ function recurse_ank_layers() {
 	ANK_IN_USE+=( "$ANK_FILE" )
 	while true; do
     FOUNDATION_ANK_FILE=$("$ANKA_IMAGE_BINARY" info "${ANK_DIR}$ANK_FILE" | grep 'Base Image:' | awk -F: '{ print $NF }' | xargs)
-		if [ "$FOUNDATION_ANK_FILE" == "" ]; then
+		if [[ "$FOUNDATION_ANK_FILE" == "" ]]; then
 			break
 		fi
     recurse_ank_layers "$ANK_DIR" "$FOUNDATION_ANK_FILE"
@@ -23,22 +22,22 @@ function recurse_ank_layers() {
 IFS=$'\n'
 for YAML_FILE in $(find "$VM_LIB" -name '*.yaml'); do
 	echo "Searching $YAML_FILE..."
-	FOUND_PATH="$(echo "$YAML_FILE" | rev | cut -d/ -f2-99 | rev)"
+	# FOUND_PATH="$(echo "$YAML_FILE" | rev | cut -d/ -f2-99 | rev)"
 	IMG_ANK=$(grep -E "^ +file:.*.ank" "$YAML_FILE" | grep '.ank' | awk '{ print $NF }' || true)
 	STATE_ANK=$(grep -E "state_file:.*.ank" "$YAML_FILE" | grep '.ank' | awk '{ print $NF }' || true)
-	if [ "$IMG_ANK" != "" ]; then
+	if [[ "$IMG_ANK" != "" ]]; then
 		recurse_ank_layers "$IMG_LIB" "$IMG_ANK"
 	fi
-	if [ "$STATE_ANK" != "" ]; then
+	if [[ "$STATE_ANK" != "" ]]; then
 		recurse_ank_layers "$STATE_LIB" "$STATE_ANK"
 	fi
 done
-echo "=========================================="
+echo "ORPHANS =========================================="
 FILE_ARRAY=($(find "$IMG_LIB" \( -name '*.ank' -o -name '*.ank.*' \) -type f))
 FILE_ARRAY+=($(find "$STATE_LIB" \( -name '*.ank' -o -name '*.ank.*' \) -type f))
 for ANK_FILE in "${FILE_ARRAY[@]}"; do
 	if [[ ! "${ANK_IN_USE[@]}" =~ $(basename "$ANK_FILE") ]]; then
-		echo "$ANK_FILE - ORPHANED"
+		echo "$ANK_FILE"
 	# else
 	# 	echo "$ANK_FILE - REFERENCED"
 	fi
