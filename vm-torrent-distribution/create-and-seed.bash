@@ -7,7 +7,7 @@ TEMPLATE_NAME=$1
 TORRENT_NAME=${TORRENT_NAME-"Anka"}
 cleanup() {
   TORRENT_ID=$(rain client list | jq ".[] | select(.Name==\"$TORRENT_NAME\") | .ID")
-  rain client remove --id $TORRENT_NAME || true
+  rain client remove --id $TORRENT_ID || true
   kill -15 $(ps aux |grep "$TEMPLATE_NAME-[s]eeder" | awk "{print \$2}")
 }
 FILE_AND_FOLDER_LIST="$(../collect-vm-template-files-and-folders.bash $TEMPLATE_NAME)"
