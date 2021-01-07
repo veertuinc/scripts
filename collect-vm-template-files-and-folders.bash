@@ -1,5 +1,6 @@
 #!/bin/bash
 set -eo pipefail
+VERBOSE=false
 [[ -z "$1" ]] && echo "You must provide a VM Template name!" && exit 1
 TEMPLATE_UUID=$(anka list | grep "$1 " | awk '{print $4}')
 IN_USE=()
@@ -12,7 +13,7 @@ ANKA_IMAGE_BINARY="/Library/Application Support/Veertu/Anka/bin/anka_image"
 function recurse_ank_layers() {
   local ANK_DIR=$1
   local ANK_FILE=$2
-  echo "Adding: $ANK_FILE"
+  $VERBOSE && echo "Adding: $ANK_FILE"
   IN_USE+=( "${ANK_DIR}$ANK_FILE" )
   while true; do
     FOUNDATION_ANK_FILE=$("$ANKA_IMAGE_BINARY" info "${ANK_DIR}$ANK_FILE" | grep 'Base Image:' | awk -F: '{ print $NF }' | xargs)
@@ -26,7 +27,7 @@ function recurse_ank_layers() {
 
 IFS=$'\n'
 for YAML_FILE in $(find "${VM_LIB}$TEMPLATE_UUID" -name '*.yaml'); do
-  echo "Searching $YAML_FILE..."
+  $VERBOSE && echo "Searching $YAML_FILE..."
   # FOUND_PATH="$(echo "$YAML_FILE" | rev | cut -d/ -f2-99 | rev)"
   IMG_ANK=$(grep -E "^ +file:.*.ank" "$YAML_FILE" | grep '.ank' | awk '{ print $NF }' || true)
   STATE_ANK=$(grep -E "state_file:.*.ank" "$YAML_FILE" | grep '.ank' | awk '{ print $NF }' || true)
@@ -38,7 +39,7 @@ for YAML_FILE in $(find "${VM_LIB}$TEMPLATE_UUID" -name '*.yaml'); do
   fi
 done
 IFS=
-echo "================================"
+$VERBOSE && echo "================================"
 for item in "${IN_USE[@]}"; do
   echo "$item"
 done
