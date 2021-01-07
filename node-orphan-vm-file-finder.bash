@@ -2,6 +2,7 @@
 set -e
 ANK_IN_USE=()
 ORPHANED_FILES=()
+ERRORED_FILES=()
 VM_LIB=$(anka config vm_lib_dir)
 IMG_LIB=$(anka config img_lib_dir)
 STATE_LIB=$(anka config state_lib_dir)
@@ -11,14 +12,18 @@ function recurse_ank_layers() {
 	local ANK_FILE=$2
 	echo "Adding: $ANK_FILE"
 	ANK_IN_USE+=( "$ANK_FILE" )
-	while true; do
-    FOUNDATION_ANK_FILE=$("$ANKA_IMAGE_BINARY" info "${ANK_DIR}$ANK_FILE" | grep 'Base Image:' | awk -F: '{ print $NF }' | xargs)
-		if [ "$FOUNDATION_ANK_FILE" == "" ]; then
-			break
-		fi
-    recurse_ank_layers "$ANK_DIR" "$FOUNDATION_ANK_FILE"
-    break
-	done
+  if "$ANKA_IMAGE_BINARY" info "${ANK_DIR}$ANK_FILE" 1>/dev/null; then
+    while true; do
+      FOUNDATION_ANK_FILE=$("$ANKA_IMAGE_BINARY" info "${ANK_DIR}$ANK_FILE" | grep 'Base Image:' | awk -F: '{ print $NF }' | xargs)
+      if [ "$FOUNDATION_ANK_FILE" == "" ]; then
+        break
+      fi
+      recurse_ank_layers "$ANK_DIR" "$FOUNDATION_ANK_FILE"
+      break
+    done
+  else
+    ERRORED_FILES+=( "${ANK_DIR}$ANK_FILE" )
+  fi
 }
 IFS=$'\n'
 for YAML_FILE in $(find "$VM_LIB" -name '*.yaml'); do
@@ -42,5 +47,9 @@ for ANK_FILE in "${FILE_ARRAY[@]}"; do
 	# else
 	# 	echo "$ANK_FILE - REFERENCED"
 	fi
+done
+echo "=========================================="
+for ANK_FILE in "${ERRORED_FILES[@]}"; do
+		echo "$ANK_FILE - ERRORED"
 done
 IFS=
