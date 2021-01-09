@@ -1,5 +1,9 @@
 # Various scripts for supporting customers
 
+
+---
+## collect-vm-template-files-and-folders.bash
+
 ```
 ❯ oldIFS=$IFS; IFS=$'\n'; for i in $(./collect-vm-template-files-and-folders.bash 10.15.7-xcode11.7-webkit); do echo "test: $i"; done; IFS=$oldIFS 
 test: /Users/nathanpierce/Library/Application Support/Veertu/Anka/img_lib/746be7a6103e4f9481f3f9a99756d6fd.ank
@@ -11,19 +15,26 @@ Transfer all files and folders with rsync:
 
 ```
 set -x
+REMOTE_USERNAME="administrator"
+REMOTE_IP="XXX.XXX.XXX.XXX"
+REMOTE_SSH_PRIV_KEY="/Users/administrator/.ssh/perf-test"
+COLLECT_RESULTS="$(./collect-vm-template-files-and-folders.bash 11.1.0-xcode12.3-webkit)"
 pushd "$(anka config vm_lib_dir)/.." && BASE_PATH=$(pwd)
-oldIFS=$IFS; IFS=$'\n'; for path in $($HOME/collect-vm-template-files-and-folders.bash 10.15.7-xcode11.7-webkit); do
-FULL_PATH=$path
-path=$(echo $path | sed "s/$(echo $BASE_PATH | sed 's/\//\\\//g')\///g")
+oldIFS=$IFS;
+IFS=$'\n';
+for COLLECT_PATH in ${COLLECT_RESULTS[@]}; do
+FULL_PATH=$COLLECT_PATH
+path=$(echo $COLLECT_PATH | sed "s/$(echo $BASE_PATH | sed 's/\//\\\//g')\///g")
 rsyncOpts=""
 dest=${FULL_PATH// /\\ }
-if [[ -d "$path" ]]; then 
+if [[ -d "$COLLECT_PATH" ]]; then 
 	rsyncOpts="--recursive"
 	dest="$(echo ${FULL_PATH// /\\ } | rev | cut -d/ -f2-99 | rev)"
 fi
-ssh -o StrictHostKeyChecking=no -i "/Users/administrator/.ssh/perf-test" administrator@{IP} "mkdir -p $(echo ${FULL_PATH// /\\ } | rev | cut -d/ -f2-99 | rev)"
-rsync -avzP $rsyncOpts -e 'ssh -i /Users/administrator/.ssh/perf-test -o StrictHostKeyChecking=no' $path administrator@{IP}:$dest
-done; IFS=$oldIFS
+ssh -o StrictHostKeyChecking=no -i "$REMOTE_SSH_PRIV_KEY" ${REMOTE_USERNAME}@${REMOTE_IP} "mkdir -p $(echo ${FULL_PATH// /\\ } | rev | cut -d/ -f2-99 | rev)"
+rsync -avzP $rsyncOpts -e "ssh -i $REMOTE_SSH_PRIV_KEY -o StrictHostKeyChecking=no" $COLLECT_PATH ${REMOTE_USERNAME}@${REMOTE_IP}:$dest
+done; 
+IFS=$oldIFS
 set +x
 popd
 ```
