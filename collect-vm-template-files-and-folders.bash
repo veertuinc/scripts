@@ -2,7 +2,7 @@
 set -eo pipefail
 VERBOSE=false
 [[ -z "$1" ]] && echo "You must provide a VM Template name!" && exit 1
-TEMPLATE_UUID=$(anka list | grep "$1 " | awk '{print $5}')
+TEMPLATE_UUID=$(anka list | grep "$1 " | awk -F"|" '{print $3}' | xargs)
 IN_USE=()
 VM_LIB=$(anka config vm_lib_dir)
 IMG_LIB=$(anka config img_lib_dir)
