@@ -38,3 +38,20 @@ IFS=$oldIFS
 set +x
 popd
 ```
+
+
+## registry-vm-template-files-and-folders.bash
+
+```
+❯ ./registry-vm-template-files-and-folders.bash /Library/Application\ Support/Veertu/Anka/registry c0847bc9-5d2d-4dbc-ba6a-240f7ff08032
+ls: ./images_dir/e559a538ce9248c2ac9be7a5504577ea.ank: No such file or directory
+list of orphaned .ank =============================
+./vm_dir/c0847bc9-5d2d-4dbc-ba6a-240f7ff08032
+./images_dir/775f3ddad39940b0b9c3437c9cf94a03.ank
+./images_dir/7e486ddfc5834c8bb9c4c7674280b542.ank
+./images_dir/d6f264303bbd4d13bd6abf8ef035fa15.ank
+./state_file_dir/7fcfa48104c0471a86c6429d3efbb450.ank
+./state_file_dir/a01ec21a367a41818e034cc5fef9baf6.ank
+./state_file_dir/e4429baea4444c2f9b8b22b7d179fb8d.ank
+./state_file_dir/ee2a81e991a14aeb9b92db312d069ac0.ank
+```
