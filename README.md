@@ -45,7 +45,6 @@ popd
 ```
 ❯ ./registry-vm-template-files-and-folders.bash /Library/Application\ Support/Veertu/Anka/registry c0847bc9-5d2d-4dbc-ba6a-240f7ff08032
 ls: ./images_dir/e559a538ce9248c2ac9be7a5504577ea.ank: No such file or directory
-list of orphaned .ank =============================
 ./vm_dir/c0847bc9-5d2d-4dbc-ba6a-240f7ff08032
 ./images_dir/775f3ddad39940b0b9c3437c9cf94a03.ank
 ./images_dir/7e486ddfc5834c8bb9c4c7674280b542.ank

@@ -18,7 +18,6 @@ for file in ${STATE_FILES[@]}; do
     RELATED_ITEMS+=( "./state_file_dir/$file" )
   fi
 done
-echo "list of orphaned .ank ============================="
 for item in "${RELATED_ITEMS[@]}"; do
   echo $item
 done
