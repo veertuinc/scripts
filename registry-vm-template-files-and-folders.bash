@@ -7,6 +7,7 @@ pushd $1 &>/dev/null
 IMAGES=($(cat ./vm_dir/$2/*/images | sort | uniq))
 STATE_FILES+=($(grep -hn "^state_file: " ./vm_dir/$2/*/*.yaml | cut -d" " -f2 | sort | uniq))
 RELATED_ITEMS=( "./vm_dir/$2" )
+ls ./vm_dir/$2 1>/dev/null
 for file in ${IMAGES[@]}; do
   if ls ./images_dir/$file 1>/dev/null; then
     RELATED_ITEMS+=( "./images_dir/$file" )
