@@ -4,8 +4,8 @@ IFS=$'\n'
 [[ -z "$1" ]] && echo "must provide root registry data dir as first arg..." && exit 1
 [[ -z "$2" ]] && echo "must provide VM UUID and second arg..." && exit 2
 pushd $1 &>/dev/null
-IMAGES=($(cat ./vm_dir/$2/*/images | sort | uniq))
-STATE_FILES+=($(cat ./vm_dir/$2/*/state_files | sort | uniq))
+IMAGES=($(cat ./vm_dir/$2/*/images | sort | uniq || true))
+STATE_FILES+=($(cat ./vm_dir/$2/*/state_files | sort | uniq || true))
 RELATED_ITEMS=( "./vm_dir/$2" )
 ls ./vm_dir/$2 1>/dev/null
 for file in ${IMAGES[@]}; do
