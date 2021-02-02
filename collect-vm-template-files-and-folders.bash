@@ -5,8 +5,11 @@ VERBOSE=false
 TEMPLATE_UUID=$(anka list | grep "$1 " | awk -F"|" '{print $3}' | xargs)
 IN_USE=()
 VM_LIB=$(anka config vm_lib_dir)
+[[ "$VM_LIB" =~ /$ ]] || VM_LIB="$VM_LIB/"
 IMG_LIB=$(anka config img_lib_dir)
+[[ "$IMG_LIB" =~ /$ ]] || IMG_LIB="$IMG_LIB/"
 STATE_LIB=$(anka config state_lib_dir)
+[[ "$STATE_LIB" =~ /$ ]] || STATE_LIB="$STATE_LIB/"
 TEMPLATE_PATH="${VM_LIB}$TEMPLATE_UUID"
 ANKA_IMAGE_BINARY="/Library/Application Support/Veertu/Anka/bin/anka_image"
 
@@ -27,6 +30,8 @@ function recurse_ank_layers() {
 
 IFS=$'\n'
 for YAML_FILE in $(find "${VM_LIB}$TEMPLATE_UUID" -name '*.yaml'); do
+  unset IMG_ANK
+  unset STATE_ANK
   $VERBOSE && echo "Searching $YAML_FILE..."
   # FOUND_PATH="$(echo "$YAML_FILE" | rev | cut -d/ -f2-99 | rev)"
   IMG_ANK=$(grep -E "^ +file:.*.ank" "$YAML_FILE" | grep '.ank' | awk '{ print $NF }' || true)
