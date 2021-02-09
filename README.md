@@ -11,35 +11,6 @@ test: /Users/nathanpierce/Library/Application Support/Veertu/Anka/img_lib/901212
 test: /Users/nathanpierce/Library/Application Support/Veertu/Anka/vm_lib/b1b9d901-2b87-410f-99bf-82411416d0b2
 ```
 
-Transfer all files and folders with rsync:
-
-```
-set -x
-REMOTE_USERNAME="administrator"
-REMOTE_IP="XXX.XXX.XXX.XXX"
-REMOTE_SSH_PRIV_KEY="/Users/administrator/.ssh/perf-test"
-COLLECT_RESULTS="$(./collect-vm-template-files-and-folders.bash 11.1.0-xcode12.3-webkit)"
-pushd "$(anka config vm_lib_dir)/.." && BASE_PATH=$(pwd)
-oldIFS=$IFS;
-IFS=$'\n';
-for COLLECT_PATH in ${COLLECT_RESULTS[@]}; do
-FULL_PATH=$COLLECT_PATH
-path=$(echo $COLLECT_PATH | sed "s/$(echo $BASE_PATH | sed 's/\//\\\//g')\///g")
-rsyncOpts=""
-dest=${FULL_PATH// /\\ }
-if [[ -d "$COLLECT_PATH" ]]; then 
-	rsyncOpts="--recursive"
-	dest="$(echo ${FULL_PATH// /\\ } | rev | cut -d/ -f2-99 | rev)"
-fi
-ssh -o StrictHostKeyChecking=no -i "$REMOTE_SSH_PRIV_KEY" ${REMOTE_USERNAME}@${REMOTE_IP} "mkdir -p $(echo ${FULL_PATH// /\\ } | rev | cut -d/ -f2-99 | rev)"
-rsync -avzP $rsyncOpts -e "ssh -i $REMOTE_SSH_PRIV_KEY -o StrictHostKeyChecking=no" $COLLECT_PATH ${REMOTE_USERNAME}@${REMOTE_IP}:$dest
-done; 
-IFS=$oldIFS
-set +x
-popd
-```
-
-
 ## registry-vm-template-files-and-folders.bash
 
 ```
@@ -54,3 +25,7 @@ ls: ./images_dir/e559a538ce9248c2ac9be7a5504577ea.ank: No such file or directory
 ./state_file_dir/e4429baea4444c2f9b8b22b7d179fb8d.ank
 ./state_file_dir/ee2a81e991a14aeb9b92db312d069ac0.ank
 ```
+
+## rsync-to-host.bash
+
+Transfer all files and folders for a Template/Tag with rsync: `./rsync-to-host.bash 12.2-xcode12.4-metal-example administrator@XXX.XXX.XXX.XXX "/Users/nathanpierce/.ssh/perf-test"`
