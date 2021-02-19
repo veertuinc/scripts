@@ -29,3 +29,7 @@ ls: ./images_dir/e559a538ce9248c2ac9be7a5504577ea.ank: No such file or directory
 ## rsync-to-host.bash
 
 Transfer all files and folders for a Template/Tag with rsync: `./rsync-to-host.bash 12.2-xcode12.4-metal-example administrator@XXX.XXX.XXX.XXX "/Users/nathanpierce/.ssh/perf-test"`
+
+## registry-layer-corruption-finder.bash
+
+Scan all of the images and state files in the registry for corruption. It will output errors if found. No output means that nothing bad was found.
