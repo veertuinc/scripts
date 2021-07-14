@@ -35,7 +35,7 @@ copy-files-from-dir() {
   DIR_LOCAL="$(echo ${DIR} | cut -d/ -f2-99)"
   mkdir -p "${DIAG_PATH}/${DIR_LOCAL}"
   pushd "${DIAG_PATH}/${DIR_LOCAL}" &>/dev/null
-    for FILE in $(ls -ht ${DIR}/${FILTER} | head -10); do
+    for FILE in $(ls -t ${DIR}/${FILTER} | head -10); do
       cp -f "${FILE}" .
     done
   popd &>/dev/null
@@ -45,27 +45,32 @@ copy-files-from-dir() {
 echo "]] INFO: This script will perform some commands as root."
 sudo echo ""
 trap cleanup EXIT
-for CUSER in $USER sudo; do
+for CUSER in $USER; do
   mkdir -p "${DIAG_PATH}/${CUSER}"
-  [[ "${CUSER}" == sudo ]] && SUDO="${CUSER}"
+  [[ "${CUSER}" == sudo ]] && SUDO="${CUSER} "
   pushd "${DIAG_PATH}/${CUSER}" &>/dev/null
-    execute-multiple-times "$SUDO df -h" &
-    execute "$SUDO anka config" &
-    execute "$SUDO ls -laht" &
-    execute "$SUDO system_profiler SPHardwareDataType" &
-    execute "$SUDO sysctl -a" &
-    execute-multiple-times "$SUDO iostat" &
-    execute-multiple-times "$SUDO vm_stat" &
-    execute "$SUDO diskutil list" &
-    execute "$SUDO ifconfig" &
-    execute-multiple-times "$SUDO nettop -l 1" &
-    execute-multiple-times "$SUDO ps -axro pcpu | awk \'{sum+=\$1} END {print sum}\'" & # This is a per-core CPU metric, so on a 12 core CPU you can get up to 1200; you're not capped at 100.
+    execute "${SUDO}anka version" &
+    execute "${SUDO}ankacluster --version" &
+    execute "${SUDO}ankacluster status" &
+    execute-multiple-times "${SUDO}df -h" &
+    execute "${SUDO}anka config" &
+    execute "${SUDO}ls -laht" &
+    execute "${SUDO}system_profiler SPHardwareDataType" &
+    execute "${SUDO}sysctl -a" &
+    execute-multiple-times "${SUDO}iostat" &
+    execute-multiple-times "${SUDO}vm_stat" &
+    execute "${SUDO}diskutil list" &
+    execute "${SUDO}ifconfig" &
+    execute-multiple-times "${SUDO}nettop -l 1" &
+    execute-multiple-times "${SUDO}ps -axro pcpu | awk \'{sum+=\$1} END {print sum}\'" & # This is a per-core CPU metric, so on a 12 core CPU you can get up to 1200; you're not capped at 100.
     copy-files-from-dir "$($SUDO anka config log_dir)" &
-    execute "$SUDO ls -laht \"$($SUDO anka config vm_lib_dir)\"" &
-    execute "$SUDO ls -laht \"$($SUDO anka config img_lib_dir)\"" &
-    execute "$SUDO ls -laht \"$($SUDO anka config state_lib_dir)\"" &
+    execute "${SUDO}ls -laht \"$($SUDO anka config vm_lib_dir)\"" &
+    execute "${SUDO}ls -laht \"$($SUDO anka config img_lib_dir)\"" &
+    execute "${SUDO}ls -laht \"$($SUDO anka config state_lib_dir)\"" &
     if [[ "${CUSER}" == sudo ]]; then
-      execute-multiple-times "$SUDO fs_usage -w -t 1" &
+      copy-files-from-dir "/Library/Logs/DiagnosticReports" "anka*.diag" &
+      copy-files-from-dir "/Library/Logs/DiagnosticReports" "anka*.crash" &
+      execute-multiple-times "${SUDO}fs_usage -w -t 1" &
       copy-files-from-dir "/var/log/veertu" "anka_agent.Veertu*" &
     fi
     wait
