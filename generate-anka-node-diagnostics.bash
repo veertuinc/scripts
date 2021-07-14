@@ -47,7 +47,7 @@ sudo echo ""
 trap cleanup EXIT
 for CUSER in $USER root; do
   mkdir -p "${DIAG_PATH}/${CUSER}"
-  [[ "${CUSER}" == sudo ]] && SUDO="${CUSER} "
+  [[ "${CUSER}" == root ]] && SUDO="sudo "
   pushd "${DIAG_PATH}/${CUSER}" &>/dev/null
     execute "${SUDO}anka version" &
     execute "${SUDO}ankacluster --version" &
@@ -67,7 +67,7 @@ for CUSER in $USER root; do
     execute "${SUDO}ls -laht \"$($SUDO anka config vm_lib_dir)\"" &
     execute "${SUDO}ls -laht \"$($SUDO anka config img_lib_dir)\"" &
     execute "${SUDO}ls -laht \"$($SUDO anka config state_lib_dir)\"" &
-    if [[ "${CUSER}" == sudo ]]; then
+    if [[ "${CUSER}" == root ]]; then
       copy-files-from-dir "/Library/Logs/DiagnosticReports" "anka*.diag" &
       copy-files-from-dir "/Library/Logs/DiagnosticReports" "anka*.crash" &
       execute-multiple-times "${SUDO}fs_usage -w -t 1" &
