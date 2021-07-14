@@ -1,6 +1,6 @@
 #!/bin/bash
 set -eo pipefail
-DIAG_FOLDER_NAME="anka-diagnostics"
+DIAG_FOLDER_NAME="anka-node-diagnostics"
 DIAG_PATH="/tmp/${DIAG_FOLDER_NAME}"
 echo "] Collecting Diagnostics from current machine (Please be patient)"
 
@@ -45,7 +45,7 @@ copy-files-from-dir() {
 echo "]] INFO: This script will perform some commands as root."
 sudo echo ""
 trap cleanup EXIT
-for CUSER in $USER; do
+for CUSER in $USER root; do
   mkdir -p "${DIAG_PATH}/${CUSER}"
   [[ "${CUSER}" == sudo ]] && SUDO="${CUSER} "
   pushd "${DIAG_PATH}/${CUSER}" &>/dev/null
@@ -76,7 +76,7 @@ for CUSER in $USER; do
     wait
   popd &>/dev/null
 done
-TAR_NAME="anka-diagnostics.tar.gz"
+TAR_NAME="anka-node-diagnostics.tar.gz"
 pushd /tmp/ &>/dev/null
   tar -czvf $TAR_NAME $DIAG_FOLDER_NAME &>/dev/null
 popd
