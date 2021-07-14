@@ -71,8 +71,10 @@ for CUSER in $USER sudo; do
     wait
   popd &>/dev/null
 done
-cd /tmp/
 TAR_NAME="anka-diagnostics.tar.gz"
-tar -czvf $TAR_NAME $DIAG_FOLDER_NAME &>/dev/null
+pushd /tmp/ &>/dev/null
+  tar -czvf $TAR_NAME $DIAG_FOLDER_NAME &>/dev/null
+popd
+mv /tmp/$TAR_NAME .
 echo "]] Created $TAR_NAME"
 ls -l $TAR_NAME
