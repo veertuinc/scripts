@@ -71,7 +71,7 @@ for CUSER in $USER root; do
       copy-files-from-dir "/Library/Logs/DiagnosticReports" "anka*.diag" &
       copy-files-from-dir "/Library/Logs/DiagnosticReports" "anka*.crash" &
       execute-multiple-times "${SUDO}fs_usage -w -t 1" &
-      copy-files-from-dir "/var/log/veertu" "anka_agent.Veertu*" &
+      copy-files-from-dir "/var/log/veertu" "anka_agent.*" &
     fi
     wait
   popd &>/dev/null
