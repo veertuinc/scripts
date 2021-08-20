@@ -55,6 +55,7 @@ for CUSER in $USER root; do
     execute-multiple-times "${SUDO}df -h" &
     execute "${SUDO}anka config" &
     execute "${SUDO}ls -laht" &
+    execute "${SUDO}sw_vers" &
     execute "${SUDO}system_profiler SPHardwareDataType" &
     execute "${SUDO}sysctl -a" &
     execute-multiple-times "${SUDO}iostat" &
