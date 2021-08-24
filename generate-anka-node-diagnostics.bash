@@ -35,7 +35,7 @@ copy-files-from-dir() {
   DIR_LOCAL="$(echo ${DIR} | cut -d/ -f2-99)"
   mkdir -p "${DIAG_PATH}/${DIR_LOCAL}"
   pushd "${DIAG_PATH}/${DIR_LOCAL}" &>/dev/null
-    for FILE in $(ls -t ${DIR}/${FILTER} | head -10); do
+    for FILE in $(ls -t ${DIR}/${FILTER} 2>/dev/null | head -10); do
       cp -f "${FILE}" .
     done
   popd &>/dev/null
@@ -52,8 +52,15 @@ for CUSER in $USER root; do
     execute "${SUDO}anka version" &
     execute "${SUDO}ankacluster --version" &
     execute "${SUDO}ankacluster status" &
-    execute-multiple-times "${SUDO}df -h" &
+    execute "${SUDO}anka list" &
+    if [[ $(${SUDO}anka list | grep -c "|") -gt 0 ]]; then
+      for TEMPLATE in $(${SUDO}anka list | grep "|" | grep -v uuid | awk '{print $2}'); do
+        execute "${SUDO}anka show ${TEMPLATE}" &
+        execute "${SUDO}anka describe ${TEMPLATE}" &
+      done
+    fi
     execute "${SUDO}anka config" &
+    execute-multiple-times "${SUDO}df -h" &
     execute "${SUDO}ls -laht" &
     execute "${SUDO}sw_vers" &
     execute "${SUDO}system_profiler SPHardwareDataType" &
