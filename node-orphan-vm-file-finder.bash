@@ -4,13 +4,20 @@ ANK_IN_USE=()
 ORPHANED_FILES=()
 ERRORED_FILES=()
 VM_LIB=$(anka config vm_lib_dir)
+[[ ! "${VM_LIB}" =~ /$ ]] && VM_LIB="${VM_LIB}/"
 IMG_LIB=$(anka config img_lib_dir)
+[[ ! "${IMG_LIB}" =~ /$ ]] && IMG_LIB="${IMG_LIB}/"
 STATE_LIB=$(anka config state_lib_dir)
+[[ ! "${STATE_LIB}" =~ /$ ]] && STATE_LIB="${STATE_LIB}/"
+echo "VM_LIB: ${VM_LIB}"
+echo "IMG_LIB: ${IMG_LIB}"
+echo "STATE_LIB: ${STATE_LIB}"
+echo "========================"
 ANKA_IMAGE_BINARY="/Library/Application Support/Veertu/Anka/bin/anka_image"
 function recurse_ank_layers() {
 	local ANK_DIR=$1
 	local ANK_FILE=$2
-	echo "Adding: $ANK_FILE"
+	#echo "Adding: $ANK_FILE"
 	ANK_IN_USE+=( "$ANK_FILE" )
   if "$ANKA_IMAGE_BINARY" info "${ANK_DIR}$ANK_FILE" 1>/dev/null; then
     while true; do
@@ -26,9 +33,9 @@ function recurse_ank_layers() {
   fi
 }
 IFS=$'\n'
-for YAML_FILE in $(find "$VM_LIB" -name '*.yaml'); do
+for YAML_FILE in $(find "$(echo ${VM_LIB} | rev | cut -d/ -f2-99 | rev)" -name '*.yaml'); do
 	echo "Searching $YAML_FILE..."
-	FOUND_PATH="$(echo "$YAML_FILE" | rev | cut -d/ -f2-99 | rev)"
+	# FOUND_PATH="$(echo "$YAML_FILE" | rev | cut -d/ -f2-99 | rev)"
 	IMG_ANK=$(grep -E "^ +file:.*.ank" "$YAML_FILE" | grep '.ank' | awk '{ print $NF }' || true)
 	STATE_ANK=$(grep -E "state_file:.*.ank" "$YAML_FILE" | grep '.ank' | awk '{ print $NF }' || true)
 	if [ "$IMG_ANK" != "" ]; then
@@ -39,8 +46,8 @@ for YAML_FILE in $(find "$VM_LIB" -name '*.yaml'); do
 	fi
 done
 echo "=========================================="
-FILE_ARRAY=($(find "$IMG_LIB" \( -name '*.ank' -o -name '*.ank.*' \) -type f))
-FILE_ARRAY+=($(find "$STATE_LIB" \( -name '*.ank' -o -name '*.ank.*' \) -type f))
+FILE_ARRAY=($(find "$(echo ${IMG_LIB} | rev | cut -d/ -f2-99 | rev)" \( -name '*.ank' -o -name '*.ank.*' \) -type f))
+FILE_ARRAY+=($(find "$(echo ${STATE_LIB} | rev | cut -d/ -f2-99 | rev)" \( -name '*.ank' -o -name '*.ank.*' \) -type f))
 for ANK_FILE in "${FILE_ARRAY[@]}"; do
 	if [[ ! "${ANK_IN_USE[@]}" =~ $(basename "$ANK_FILE") ]]; then
 		echo "$ANK_FILE - ORPHANED"
