@@ -76,6 +76,7 @@ for CUSER in $USER root; do
     execute "${SUDO}ls -laht \"$($SUDO anka config img_lib_dir)\"" &
     execute "${SUDO}ls -laht \"$($SUDO anka config state_lib_dir)\"" &
     if [[ "${CUSER}" == root ]]; then
+      execute "${SUDO}ps aux | grep anka"
       copy-files-from-dir "/Library/Logs/DiagnosticReports" "anka*.diag" &
       copy-files-from-dir "/Library/Logs/DiagnosticReports" "anka*.crash" &
       execute-multiple-times "${SUDO}fs_usage -w -t 1" &
