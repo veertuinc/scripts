@@ -45,7 +45,9 @@ copy-files-from-dir() {
 echo "]] INFO: This script will perform some commands as root."
 sudo echo ""
 trap cleanup EXIT
-for CUSER in $USER root; do
+CURRENT_USER="${USER}"
+[[ $CURRENT_USER == root ]] && CURRENT_USER=
+for CUSER in $CURRENT_USER root; do
   mkdir -p "${DIAG_PATH}/${CUSER}"
   [[ "${CUSER}" == root ]] && SUDO="sudo "
   pushd "${DIAG_PATH}/${CUSER}" &>/dev/null
@@ -85,6 +87,8 @@ for CUSER in $USER root; do
     wait
   popd &>/dev/null
 done
+
+exit
 TAR_NAME="anka-node-diagnostics.tar.gz"
 pushd /tmp/ &>/dev/null
   tar -czvf $TAR_NAME $DIAG_FOLDER_NAME &>/dev/null
