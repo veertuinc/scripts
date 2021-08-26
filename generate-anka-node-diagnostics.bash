@@ -87,8 +87,6 @@ for CUSER in $CURRENT_USER root; do
     wait
   popd &>/dev/null
 done
-
-exit
 TAR_NAME="anka-node-diagnostics.tar.gz"
 pushd /tmp/ &>/dev/null
   tar -czvf $TAR_NAME $DIAG_FOLDER_NAME &>/dev/null
