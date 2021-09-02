@@ -54,7 +54,7 @@ copy-folders-from-dir() {
 
 echo "]] INFO: This script will perform some commands as root."
 sudo echo ""
-# trap cleanup EXIT
+trap cleanup EXIT
 CURRENT_USER="${USER}"
 [[ $CURRENT_USER == root ]] && CURRENT_USER=
 for CUSER in $CURRENT_USER root; do
