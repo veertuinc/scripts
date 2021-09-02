@@ -5,7 +5,7 @@ DIAG_PATH="/tmp/${DIAG_FOLDER_NAME}"
 echo "] Collecting Diagnostics from current machine (Please be patient)"
 
 cleanup() {
-  rm -rf "${DIAG_PATH}"
+  sudo rm -rf "${DIAG_PATH}"
 }
 
 execute() {
@@ -31,20 +31,30 @@ copy-files-from-dir() {
   OLD_IFS=$IFS
   IFS=$'\n'
   DIR="${1}"
-  FILTER="${2:-"/*"}"
+  FILTER="${2:-"*"}"
   DIR_LOCAL="$(echo ${DIR} | cut -d/ -f2-99)"
-  mkdir -p "${DIAG_PATH}/${DIR_LOCAL}"
-  pushd "${DIAG_PATH}/${DIR_LOCAL}" &>/dev/null
-    for FILE in $(ls -t ${DIR}/${FILTER} 2>/dev/null | head -10); do
-      cp -f "${FILE}" .
-    done
-  popd &>/dev/null
+  sudo -n -i bash -c "mkdir -p \"${DIAG_PATH}/${DIR_LOCAL}\""
+  for FULL_FILE_PATH in $(sudo -n -i bash -c "ls -t \"${DIR}\"/${FILTER}" 2>/dev/null | head -15); do
+    sudo -n -i bash -c "cp -f \"${FULL_FILE_PATH}\" \"${DIAG_PATH}/${DIR_LOCAL}\""
+  done
+  IFS=$OLD_IFS
+}
+
+copy-folders-from-dir() {
+  OLD_IFS=$IFS
+  IFS=$'\n'
+  DIR="${1}"
+  DIR_LOCAL="$(echo ${DIR} | cut -d/ -f2-99)"
+  sudo -n -i bash -c "mkdir -p \"${DIAG_PATH}/${DIR_LOCAL}\""
+  for FULL_FOLDER_PATH in $(sudo -n -i bash -c "ls -d \"${DIR}\"/* 2>/dev/null"); do
+    sudo -n -i bash -c "cp -rf \"${FULL_FOLDER_PATH}\" \"${DIAG_PATH}/${DIR_LOCAL}\""
+  done
   IFS=$OLD_IFS
 }
 
 echo "]] INFO: This script will perform some commands as root."
 sudo echo ""
-trap cleanup EXIT
+# trap cleanup EXIT
 CURRENT_USER="${USER}"
 [[ $CURRENT_USER == root ]] && CURRENT_USER=
 for CUSER in $CURRENT_USER root; do
@@ -86,6 +96,9 @@ for CUSER in $CURRENT_USER root; do
       execute-multiple-times "${SUDO}fs_usage -f diskio -t 2" 3 & # https://superuser.com/a/1542670
       wait $!
       execute-multiple-times "${SUDO}fs_usage -w -t 1" &
+      copy-folders-from-dir "$($SUDO anka config vm_lib_dir)" &
+    else
+      copy-folders-from-dir "$($SUDO anka config vm_lib_dir)" &
     fi
     wait
   popd &>/dev/null
