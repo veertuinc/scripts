@@ -107,7 +107,7 @@ done
 TAR_NAME="anka-node-diagnostics.tar.gz"
 pushd /tmp/ &>/dev/null
   sudo tar -czvf $TAR_NAME $DIAG_FOLDER_NAME 1>/dev/null
-  sudo chmod 777 $TAR_NAME
+  sudo chown ${USER}:wheel $TAR_NAME
 popd
 mv /tmp/$TAR_NAME .
 echo "]] Created $TAR_NAME"
