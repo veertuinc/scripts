@@ -1,7 +1,8 @@
 #!/bin/bash
 set -eo pipefail
 DIAG_FOLDER_NAME="anka-node-diagnostics"
-DIAG_PATH="/tmp/${DIAG_FOLDER_NAME}"
+TEMP_STORAGE_PATH="/tmp"
+DIAG_PATH="${TEMP_STORAGE_PATH}/${DIAG_FOLDER_NAME}"
 echo "] Collecting Diagnostics from current machine (Please be patient)"
 
 cleanup() {
@@ -105,7 +106,8 @@ for CUSER in $CURRENT_USER root; do
 done
 TAR_NAME="anka-node-diagnostics.tar.gz"
 pushd /tmp/ &>/dev/null
-  tar -czvf $TAR_NAME $DIAG_FOLDER_NAME &>/dev/null
+  sudo tar -czvf $TAR_NAME $DIAG_FOLDER_NAME 1>/dev/null
+  sudo chmod 777 $TAR_NAME
 popd
 mv /tmp/$TAR_NAME .
 echo "]] Created $TAR_NAME"
