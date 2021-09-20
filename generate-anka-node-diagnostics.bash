@@ -98,6 +98,7 @@ for CUSER in $CURRENT_USER root; do
       wait $!
       execute-multiple-times "${SUDO}fs_usage -w -t 1" &
       copy-folders-from-dir "$($SUDO anka config vm_lib_dir)" &
+      execute "${SUDO}log show --last 30m" &
     else
       copy-folders-from-dir "$($SUDO anka config vm_lib_dir)" &
     fi
