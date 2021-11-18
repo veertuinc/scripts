@@ -90,7 +90,6 @@ for CUSER in $CURRENT_USER root; do
     execute "${SUDO}ls -laht \"$($SUDO anka config state_lib_dir)\"" &
     if [[ "${CUSER}" == root ]]; then
       copy-files-from-dir "/Library/Logs/DiagnosticReports" "system.log*" &
-      execute "${SUDO}ps aux | grep anka" &
       copy-files-from-dir "/Library/Logs/DiagnosticReports" "anka*.diag" &
       copy-files-from-dir "/Library/Logs/DiagnosticReports" "anka*.crash" &
       copy-files-from-dir "/Library/Logs/DiagnosticReports" "Anka_*.hang" &
@@ -100,6 +99,8 @@ for CUSER in $CURRENT_USER root; do
       execute-multiple-times "${SUDO}fs_usage -w -t 1" &
       copy-folders-from-dir "$($SUDO anka config vm_lib_dir)" &
       execute "${SUDO}log show --last 30m" &
+      sleep 5
+      execute "${SUDO}ps aux | grep anka | grep -v generate-anka-node-diagnostics" &
     else
       copy-folders-from-dir "$($SUDO anka config vm_lib_dir)" &
     fi
