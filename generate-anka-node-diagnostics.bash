@@ -93,6 +93,7 @@ for CUSER in $CURRENT_USER root; do
       execute "${SUDO}ps aux | grep anka" &
       copy-files-from-dir "/Library/Logs/DiagnosticReports" "anka*.diag" &
       copy-files-from-dir "/Library/Logs/DiagnosticReports" "anka*.crash" &
+      copy-files-from-dir "/Library/Logs/DiagnosticReports" "Anka_*.hang" &
       copy-files-from-dir "/var/log/veertu" "anka_agent.*" &
       execute-multiple-times "${SUDO}fs_usage -f diskio -t 2" 3 & # https://superuser.com/a/1542670
       wait $!
