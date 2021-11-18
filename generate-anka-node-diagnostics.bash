@@ -112,6 +112,6 @@ pushd /tmp/ &>/dev/null
   sudo tar -czvf $TAR_NAME $DIAG_FOLDER_NAME 1>/dev/null
   sudo chown ${USER}:wheel $TAR_NAME
 popd &>/dev/null
-mv /tmp/$TAR_NAME .
+sudo mv /tmp/$TAR_NAME .
 echo "]] Created $TAR_NAME"
 ls -l $TAR_NAME
