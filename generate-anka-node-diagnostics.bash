@@ -79,6 +79,7 @@ for CUSER in $CURRENT_USER root; do
     execute-multiple-times "${SUDO}df -h" &
     execute "${SUDO}ls -laht" &
     execute "${SUDO}sw_vers" &
+    execute "${SUDO}ps -axm -o %mem,rss,comm" &
     execute "${SUDO}system_profiler SPHardwareDataType" &
     execute "${SUDO}sysctl -a" &
     execute-multiple-times "${SUDO}iostat" &
