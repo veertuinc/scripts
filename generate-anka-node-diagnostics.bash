@@ -93,6 +93,7 @@ for CUSER in $CURRENT_USER root; do
     execute "${SUDO}ls -laht \"$($SUDO anka config img_lib_dir)\"" &
     execute "${SUDO}ls -laht \"$($SUDO anka config state_lib_dir)\"" &
     if [[ "${CUSER}" == root ]]; then
+      execute "${SUDO}launchctl list" &
       execute "${SUDO}ls -la /tmp/" &
       execute "${SUDO}kextstat" &
       execute "${SUDO}anka license show" &
