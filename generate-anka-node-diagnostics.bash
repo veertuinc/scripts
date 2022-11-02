@@ -3,6 +3,8 @@ set -eo pipefail
 DIAG_FOLDER_NAME="anka-node-diagnostics"
 TEMP_STORAGE_PATH="/tmp"
 DIAG_PATH="${TEMP_STORAGE_PATH}/${DIAG_FOLDER_NAME}"
+
+[[ -z "$(command -v anka)" ]] && echo "must have anka CLI installed to use this script" && exit 1
 echo "] Collecting Diagnostics from current machine (Please be patient)"
 
 cleanup() {
