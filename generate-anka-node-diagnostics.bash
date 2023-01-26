@@ -112,6 +112,7 @@ for CUSER in $CURRENT_USER root; do
       copy-folders-from-dir "$($SUDO anka config vm_lib_dir)" &
       execute "${SUDO}log show --last 30m" &
       sleep 5
+      execute "${SUDO}ps aux | grep VirtualMachine" &
       execute "${SUDO}ps aux | grep anka | grep -v generate-anka-node-diagnostics" &
     else
       copy-folders-from-dir "$($SUDO anka config vm_lib_dir)" &
