@@ -97,6 +97,7 @@ for CUSER in $CURRENT_USER root; do
     if [[ "${CUSER}" == root ]]; then
       execute "${SUDO}launchctl list" &
       execute "${SUDO}ls -la /tmp/" &
+      execute "${SUDO}ls -la /var/run/" &
       execute "${SUDO}kextstat" &
       execute "${SUDO}anka license show" &
       copy-files-from-dir "/Library/Logs/DiagnosticReports" "system.log*" &
