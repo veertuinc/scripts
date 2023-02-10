@@ -121,7 +121,7 @@ for CUSER in $CURRENT_USER root; do
     wait
   popd &>/dev/null
 done
-ZIP_NAME="anka-node-diagnostics.zip"
+ZIP_NAME="anka-node-diagnostics-$(whoami).zip"
 pushd /tmp/ &>/dev/null
   sudo zip -9 $ZIP_NAME $DIAG_FOLDER_NAME 1>/dev/null
   sudo chown ${USER}:wheel $ZIP_NAME
