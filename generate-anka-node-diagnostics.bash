@@ -121,11 +121,11 @@ for CUSER in $CURRENT_USER root; do
     wait
   popd &>/dev/null
 done
-TAR_NAME="anka-node-diagnostics.tar.gz"
+ZIP_NAME="anka-node-diagnostics.zip"
 pushd /tmp/ &>/dev/null
-  sudo tar -czvf $TAR_NAME $DIAG_FOLDER_NAME 1>/dev/null
-  sudo chown ${USER}:wheel $TAR_NAME
+  sudo zip -9 $ZIP_NAME $DIAG_FOLDER_NAME 1>/dev/null
+  sudo chown ${USER}:wheel $ZIP_NAME
 popd &>/dev/null
-sudo mv /tmp/$TAR_NAME .
-echo "]] Created $TAR_NAME"
-ls -l $TAR_NAME
+sudo mv /tmp/$ZIP_NAME .
+echo "]] Created $ZIP_NAME"
+ls -l $ZIP_NAME
