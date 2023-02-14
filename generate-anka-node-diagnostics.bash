@@ -1,6 +1,7 @@
 #!/bin/bash
 set -eo pipefail
-DIAG_FOLDER_NAME="anka-node-diagnostics"
+UNIQUENESS="$(whoami | cut -d' ' -f1)"
+DIAG_FOLDER_NAME="anka-node-diagnostics-${UNIQUENESS}"
 TEMP_STORAGE_PATH="/tmp"
 DIAG_PATH="${TEMP_STORAGE_PATH}/${DIAG_FOLDER_NAME}"
 
@@ -121,7 +122,7 @@ for CUSER in $CURRENT_USER root; do
     wait
   popd &>/dev/null
 done
-ZIP_NAME="anka-node-diagnostics-$(whoami).zip"
+ZIP_NAME="anka-node-diagnostics-${UNIQUENESS}.zip"
 pushd /tmp/ &>/dev/null
   sudo zip -9 -r $ZIP_NAME $DIAG_FOLDER_NAME 1>/dev/null
   sudo chown ${USER}:wheel $ZIP_NAME
