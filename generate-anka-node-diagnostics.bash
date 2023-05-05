@@ -4,7 +4,6 @@ UNIQUENESS="$(whoami | cut -d' ' -f1)"
 DIAG_FOLDER_NAME="anka-node-diagnostics-${UNIQUENESS}"
 TEMP_STORAGE_PATH="/tmp"
 DIAG_PATH="${TEMP_STORAGE_PATH}/${DIAG_FOLDER_NAME}"
-[[ ! -d "${DIAG_PATH}" ]] || rm -rf "${DIAG_PATH}"
 
 [[ -z "$(command -v anka)" ]] && echo "must have anka CLI installed to use this script" && exit 1
 echo "] Collecting Diagnostics from current machine (Please be patient)"
@@ -12,6 +11,7 @@ echo "] Collecting Diagnostics from current machine (Please be patient)"
 cleanup() {
   sudo rm -rf "${DIAG_PATH}"
 }
+cleanup
 
 execute() {
   FILE_NAME="${2:-$1}"
