@@ -4,6 +4,7 @@ UNIQUENESS="$(whoami | cut -d' ' -f1)"
 DIAG_FOLDER_NAME="anka-node-diagnostics-${UNIQUENESS}"
 TEMP_STORAGE_PATH="/tmp"
 DIAG_PATH="${TEMP_STORAGE_PATH}/${DIAG_FOLDER_NAME}"
+[[ ! -d "${DIAG_PATH}" ]] || rm -rf "${DIAG_PATH}"
 
 [[ -z "$(command -v anka)" ]] && echo "must have anka CLI installed to use this script" && exit 1
 echo "] Collecting Diagnostics from current machine (Please be patient)"
@@ -66,8 +67,6 @@ for CUSER in $CURRENT_USER root; do
   [[ "${CUSER}" == root ]] && SUDO="sudo "
   pushd "${DIAG_PATH}/${CUSER}" &>/dev/null
     execute "${SUDO}anka version" &
-    execute "${SUDO}ankacluster --version" &
-    execute "${SUDO}ankacluster status" &
     execute "${SUDO}anka list" &
     if [[ $(${SUDO}anka list | grep -c "|") -gt 0 ]]; then
       for TEMPLATE in $(${SUDO}anka list | grep "|" | grep -v uuid | awk '{print $2}'); do
@@ -96,6 +95,8 @@ for CUSER in $CURRENT_USER root; do
     execute "${SUDO}ls -laht \"$($SUDO anka config img_lib_dir)\"" &
     execute "${SUDO}ls -laht \"$($SUDO anka config state_lib_dir)\"" &
     if [[ "${CUSER}" == root ]]; then
+      execute "${SUDO}ankacluster --version" &
+      execute "${SUDO}ankacluster status" &
       execute "${SUDO}launchctl list" &
       execute "${SUDO}ls -la /tmp/" &
       execute "${SUDO}ls -la /var/run/" &
