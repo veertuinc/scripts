@@ -71,6 +71,7 @@ for CUSER in $CURRENT_USER root; do
     if [[ $(${SUDO}anka list | grep -c "|") -gt 0 ]]; then
       for TEMPLATE in $(${SUDO}anka list | grep "|" | grep -v uuid | awk '{print $2}'); do
         execute "${SUDO}anka show ${TEMPLATE}" &
+        execute "${SUDO}anka show ${TEMPLATE} network" &
         execute "${SUDO}anka describe ${TEMPLATE}" &
       done
       for ITEM in $(${SUDO}launchctl list | grep ankahv | awk '{print $3}'); do
