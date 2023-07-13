@@ -39,7 +39,7 @@ copy-files-from-dir() {
   FILTER="${2:-"*"}"
   DIR_LOCAL="$(echo ${DIR} | cut -d/ -f2-99)"
   sudo -n -i bash -c "mkdir -p \"${DIAG_PATH}/${DIR_LOCAL}\""
-  for FULL_FILE_PATH in $(sudo -n -i bash -c "ls -t \"${DIR}\"/${FILTER}" 2>/dev/null | head -30); do
+  for FULL_FILE_PATH in $(sudo -n -i bash -c "ls -t \"${DIR}\"/${FILTER}" 2>/dev/null | head -50); do
     sudo -n -i bash -c "cp -f \"${FULL_FILE_PATH}\" \"${DIAG_PATH}/${DIR_LOCAL}\""
   done
   IFS=$OLD_IFS
