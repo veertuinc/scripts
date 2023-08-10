@@ -100,6 +100,7 @@ for CUSER in $CURRENT_USER root; do
       execute "${SUDO}ankacluster status" &
       execute "${SUDO}launchctl list" &
       execute "${SUDO}ls -la /tmp/" &
+      execute "${SUDO}ls -la /Applications/" &
       execute "${SUDO}ls -la /var/run/" &
       execute "${SUDO}kextstat" &
       execute "${SUDO}anka license show" &
