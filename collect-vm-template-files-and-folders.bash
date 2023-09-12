@@ -34,7 +34,7 @@ for YAML_FILE in $(find "${VM_LIB}$TEMPLATE_UUID" -name '*.yaml'); do
   unset STATE_ANK
   $VERBOSE && echo "Searching $YAML_FILE..."
   # FOUND_PATH="$(echo "$YAML_FILE" | rev | cut -d/ -f2-99 | rev)"
-  IMG_ANK=$(grep -E "^ +file:.*.ank" "$YAML_FILE" | grep '.ank' | awk '{ print $NF }' || true)
+  IMG_ANK=$(grep -E "file:.*.ank" "$YAML_FILE" | grep '.ank' | awk '{ print $NF }' || true)
   STATE_ANK=$(grep -E "state_file:.*.ank" "$YAML_FILE" | grep '.ank' | awk '{ print $NF }' || true)
   if [ "$IMG_ANK" != "" ]; then
     recurse_ank_layers "$IMG_LIB" "$IMG_ANK"
