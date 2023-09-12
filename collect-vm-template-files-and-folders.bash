@@ -1,6 +1,6 @@
 #!/bin/bash
 set -eo pipefail
-VERBOSE=false
+VERBOSE=${VERBOSE:-false}
 [[ -z "$1" ]] && echo "You must provide a VM Template name!" && exit 1
 TEMPLATE_UUID=$(anka list | grep "$1 " | awk -F"|" '{print $3}' | xargs)
 IN_USE=()
