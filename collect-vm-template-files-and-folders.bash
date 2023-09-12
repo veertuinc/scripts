@@ -19,10 +19,8 @@ function recurse_ank_layers() {
   $VERBOSE && echo "Adding: $ANK_FILE"
   IN_USE+=( "${ANK_DIR}$ANK_FILE" )
   while true; do
-    FOUNDATION_ANK_FILE=$("$ANKA_IMAGE_BINARY" info "${ANK_DIR}$ANK_FILE" | grep 'Base Image:' | awk -F: '{ print $NF }' | xargs)
-    if [ "$FOUNDATION_ANK_FILE" == "" ]; then
-      break
-    fi
+    FOUNDATION_ANK_FILE=$("$ANKA_IMAGE_BINARY" info "${ANK_DIR}$ANK_FILE" | grep 'Base Image:' | awk -F: '{ print $NF }' | xargs || true)
+    [ "$FOUNDATION_ANK_FILE" == "" ] && break || true
     recurse_ank_layers "$ANK_DIR" "$FOUNDATION_ANK_FILE"
     break
   done
