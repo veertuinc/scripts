@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
-set -eo pipefail
+set -exo pipefail
 UNIQUENESS="$(whoami | cut -d' ' -f1)"
 DIAG_FOLDER_NAME="anka-node-diagnostics-${UNIQUENESS}"
 TEMP_STORAGE_PATH="/tmp"
 DIAG_PATH="${TEMP_STORAGE_PATH}/${DIAG_FOLDER_NAME}"
+PYTHON=$(command -v python || command -v python3)
+[[ -n "${PYTHON}" ]] || (echo "this script requires python be installed either as 'python' or 'python3' and available in the PATH" && exit 1)
 
 [[ -z "$(command -v anka)" ]] && echo "must have anka CLI installed to use this script" && exit 1
 echo "] Collecting Diagnostics from current machine (Please be patient)"
@@ -69,11 +71,13 @@ for CUSER in $CURRENT_USER root; do
     execute "${SUDO}anka version" &
     execute "${SUDO}anka list" &
     if [[ $(${SUDO}anka list | grep -c "|") -gt 0 ]]; then
-      for TEMPLATE in $(${SUDO}anka list | grep "|" | grep -v uuid | awk '{print $2}'); do
-        execute "${SUDO}anka show ${TEMPLATE}" &
-        execute "${SUDO}anka show ${TEMPLATE} network" &
-        execute "${SUDO}anka describe ${TEMPLATE}" &
+      OLD_IFS=${IFS}; IFS=$'\n'
+      for TEMPLATE in $(${SUDO}anka -j list | $PYTHON -c "import sys, json; print('\n'.join([i['name'] for i in json.load(sys.stdin)['body']]))"); do
+        execute "${SUDO}anka show \"${TEMPLATE}\"" &
+        execute "${SUDO}anka show \"${TEMPLATE}\" network" &
+        execute "${SUDO}anka describe \"${TEMPLATE}\"" &
       done
+      IFS=$OLD_IFS
       for ITEM in $(${SUDO}launchctl list | grep ankahv | awk '{print $3}'); do
         execute "${SUDO}launchctl print system/${ITEM}" &
       done
