@@ -1,6 +1,6 @@
 #!/bin/bash
 set -eo pipefail
-VERBOSE=false
+VERBOSE=${VERBOSE:-false}
 [[ -z "$1" ]] && echo "You must provide a VM Template name!" && exit 1
 TEMPLATE_UUID=$(anka list | grep "$1 " | awk -F"|" '{print $3}' | xargs)
 IN_USE=()
@@ -19,10 +19,8 @@ function recurse_ank_layers() {
   $VERBOSE && echo "Adding: $ANK_FILE"
   IN_USE+=( "${ANK_DIR}$ANK_FILE" )
   while true; do
-    FOUNDATION_ANK_FILE=$("$ANKA_IMAGE_BINARY" info "${ANK_DIR}$ANK_FILE" | grep 'Base Image:' | awk -F: '{ print $NF }' | xargs)
-    if [ "$FOUNDATION_ANK_FILE" == "" ]; then
-      break
-    fi
+    FOUNDATION_ANK_FILE=$("$ANKA_IMAGE_BINARY" info "${ANK_DIR}$ANK_FILE" | grep 'Base Image:' | awk -F: '{ print $NF }' | xargs || true)
+    [ "$FOUNDATION_ANK_FILE" == "" ] && break || true
     recurse_ank_layers "$ANK_DIR" "$FOUNDATION_ANK_FILE"
     break
   done
@@ -34,7 +32,7 @@ for YAML_FILE in $(find "${VM_LIB}$TEMPLATE_UUID" -name '*.yaml'); do
   unset STATE_ANK
   $VERBOSE && echo "Searching $YAML_FILE..."
   # FOUND_PATH="$(echo "$YAML_FILE" | rev | cut -d/ -f2-99 | rev)"
-  IMG_ANK=$(grep -E "^ +file:.*.ank" "$YAML_FILE" | grep '.ank' | awk '{ print $NF }' || true)
+  IMG_ANK=$(grep -E "file:.*.ank" "$YAML_FILE" | grep '.ank' | awk '{ print $NF }' || true)
   STATE_ANK=$(grep -E "state_file:.*.ank" "$YAML_FILE" | grep '.ank' | awk '{ print $NF }' || true)
   if [ "$IMG_ANK" != "" ]; then
     recurse_ank_layers "$IMG_LIB" "$IMG_ANK"
