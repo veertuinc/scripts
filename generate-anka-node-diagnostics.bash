@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -exo pipefail
+set -eo pipefail
 UNIQUENESS="$(whoami | cut -d' ' -f1)"
 DIAG_FOLDER_NAME="anka-node-diagnostics-${UNIQUENESS}"
 TEMP_STORAGE_PATH="/tmp"
