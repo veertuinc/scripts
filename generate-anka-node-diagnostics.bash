@@ -72,7 +72,7 @@ for CUSER in $CURRENT_USER root; do
     execute "${SUDO}anka list" &
     if [[ $(${SUDO}anka list | grep -c "|") -gt 0 ]]; then
       OLD_IFS=${IFS}; IFS=$'\n'
-      for TEMPLATE in $(eval ${SUDO}anka -j list | $PYTHON -c "import sys, json; print('\n'.join([i['name'] for i in json.load(sys.stdin)['body']]))"); do
+      for TEMPLATE in $(eval ${SUDO}anka --machine-readable list | $PYTHON -c "import sys, json; print('\n'.join([i['name'] for i in json.load(sys.stdin)['body']]))"); do
         execute "${SUDO}anka show \"${TEMPLATE}\"" &
         execute "${SUDO}anka show \"${TEMPLATE}\" network" &
         execute "${SUDO}anka describe \"${TEMPLATE}\"" &
