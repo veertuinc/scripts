@@ -68,6 +68,7 @@ for CUSER in $CURRENT_USER root; do
   mkdir -p "${DIAG_PATH}/${CUSER}"
   [[ "${CUSER}" == root ]] && SUDO="sudo "
   pushd "${DIAG_PATH}/${CUSER}" &>/dev/null
+    execute "${SUDO}uptime"
     execute "${SUDO}anka version" &
     execute "${SUDO}anka list" &
     if [[ $(${SUDO}anka list | grep -c "|") -gt 0 ]]; then
