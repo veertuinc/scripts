@@ -94,7 +94,6 @@ for CUSER in $CURRENT_USER root; do
     execute-multiple-times "${SUDO}vm_stat" &
     execute "${SUDO}diskutil list" &
     execute "${SUDO}ifconfig" &
-    execute "${SUDO}dmesg" &
     execute-multiple-times "${SUDO}nettop -l 1" &
     execute-multiple-times "${SUDO}ps -axro pcpu | awk \'{sum+=\$1} END {print sum}\'" & # This is a per-core CPU metric, so on a 12 core CPU you can get up to 1200; you're not capped at 100.
     copy-files-from-dir "$($SUDO anka config log_dir)" &
@@ -102,6 +101,7 @@ for CUSER in $CURRENT_USER root; do
     execute "${SUDO}ls -laht \"$($SUDO anka config img_lib_dir)\"" &
     execute "${SUDO}ls -laht \"$($SUDO anka config state_lib_dir)\"" &
     if [[ "${CUSER}" == root ]]; then
+      execute "${SUDO}dmesg" &
       execute "${SUDO}ankacluster --version" &
       execute "${SUDO}ankacluster status" &
       execute "${SUDO}launchctl list" &
