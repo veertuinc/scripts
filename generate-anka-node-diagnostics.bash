@@ -83,7 +83,7 @@ for CUSER in $CURRENT_USER root; do
         execute "${SUDO}launchctl print system/${ITEM}" &
       done
     fi
-    execute "${SUDO}anka config" &
+    execute "${SUDO}anka config | sed '/default_passwd/d'" &
     execute-multiple-times "${SUDO}df -h" &
     execute "${SUDO}ls -laht" &
     execute "${SUDO}sw_vers" &
