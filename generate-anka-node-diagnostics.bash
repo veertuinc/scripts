@@ -20,6 +20,7 @@ execute() {
   FILE_NAME="${FILE_NAME// /_}"
   FILE_NAME="${FILE_NAME//\//\\}"
   FILE_NAME="${FILE_NAME//sudo_/}"
+  echo "]] executing \"${1}\""
   ( eval "${1}" ) >> "${FILE_NAME}"
 }
 
