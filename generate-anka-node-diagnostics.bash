@@ -90,6 +90,7 @@ for CUSER in $CURRENT_USER root; do
     execute "${SUDO}sw_vers" &
     execute "${SUDO}ps -axm -o %mem,rss,comm" &
     execute "${SUDO}system_profiler SPHardwareDataType" &
+    execute "${SUDO}system_profiler SPDisplaysDataType" &
     execute "${SUDO}sysctl -a" &
     execute-multiple-times "${SUDO}iostat" &
     execute-multiple-times "${SUDO}vm_stat" &
