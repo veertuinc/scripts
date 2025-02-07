@@ -111,6 +111,7 @@ for CUSER in $CURRENT_USER root; do
       execute "${SUDO}ls -la /Applications/" &
       execute "${SUDO}ls -la /var/run/" &
       execute "${SUDO}kextstat" &
+      execute "${SUDO}systemextensionsctl list" &
       execute "${SUDO}anka license show" &
       copy-files-from-dir "/Library/Logs/DiagnosticReports" "system.log*" &
       copy-files-from-dir "/Library/Logs/DiagnosticReports" "anka*.diag" &
