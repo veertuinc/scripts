@@ -43,6 +43,7 @@ copy-files-from-dir() {
   DIR_LOCAL="$(echo ${DIR} | cut -d/ -f2-99)"
   sudo -n -i bash -c "mkdir -p \"${DIAG_PATH}/${DIR_LOCAL}\""
   for FULL_FILE_PATH in $(sudo -n -i bash -c "ls -t \"${DIR}\"/${FILTER}" 2>/dev/null | head -50); do
+    echo "]] copying ${FULL_FILE_PATH} to ${DIAG_PATH}/${DIR_LOCAL}"
     sudo -n -i bash -c "cp -f \"${FULL_FILE_PATH}\" \"${DIAG_PATH}/${DIR_LOCAL}\""
   done
   IFS=$OLD_IFS
@@ -55,6 +56,7 @@ copy-folders-from-dir() {
   DIR_LOCAL="$(echo ${DIR} | cut -d/ -f2-99)"
   sudo -n -i bash -c "mkdir -p \"${DIAG_PATH}/${DIR_LOCAL}\""
   for FULL_FOLDER_PATH in $(sudo -n -i bash -c "ls -d \"${DIR}\"/* 2>/dev/null"); do
+    echo "]] copying ${FULL_FOLDER_PATH} to ${DIAG_PATH}/${DIR_LOCAL}"
     sudo -n -i bash -c "cp -rf \"${FULL_FOLDER_PATH}\" \"${DIAG_PATH}/${DIR_LOCAL}\""
   done
   IFS=$OLD_IFS
