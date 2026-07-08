@@ -79,6 +79,7 @@ for CUSER in $CURRENT_USER root; do
       for TEMPLATE in $(eval ${SUDO}anka --machine-readable list | $PYTHON -c "import sys, json; print('\n'.join([i['name'] for i in json.load(sys.stdin)['body']]))"); do
         execute "${SUDO}anka show \"${TEMPLATE}\"" &
         execute "${SUDO}anka show \"${TEMPLATE}\" network" &
+        execute "${SUDO}anka show \"${TEMPLATE}\" disk" &
         execute "${SUDO}anka describe \"${TEMPLATE}\"" &
       done
       IFS=$OLD_IFS
