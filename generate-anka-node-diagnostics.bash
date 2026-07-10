@@ -121,6 +121,10 @@ for CUSER in $CURRENT_USER root; do
       copy-files-from-dir "/Library/Logs/DiagnosticReports" "anka*.crash" &
       copy-files-from-dir "/Library/Logs/DiagnosticReports" "anka*.ips" &
       copy-files-from-dir "/Library/Logs/DiagnosticReports" "Anka_*.hang" &
+      copy-files-from-dir "/Library/Logs/DiagnosticReports" "com.apple.Virtualization.VirtualMachine*" &
+      copy-files-from-dir "/Library/Logs/DiagnosticReports" "*.ips" &
+      copy-files-from-dir "/Library/Logs/DiagnosticReports" "*.spin" &
+      copy-files-from-dir "/Library/Logs/DiagnosticReports" "*.panic" &
       copy-files-from-dir "/var/log/veertu" "anka_agent.*" &
       copy-files-from-dir "/var/log" "cloud-connect.log" &
       copy-files-from-dir "/var/log" "install.log" &
