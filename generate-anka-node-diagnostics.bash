@@ -136,6 +136,7 @@ for CUSER in $CURRENT_USER root; do
       execute-multiple-times "${SUDO}fs_usage -w -t 1" &
       copy-folders-from-dir "$($SUDO anka config vm_lib_dir)" &
       execute "${SUDO}log show --last 30m" &
+      execute "${SUDO}log -a" &
       sleep 5
       execute "${SUDO}ps aux | grep VirtualMachine" &
       execute "${SUDO}ps aux | grep anka | grep -v generate-anka-node-diagnostics" &
